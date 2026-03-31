@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agent-subscription-api:latest
+    container_name: agent-subscription-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      MAINLAYER_API_KEY: ${MAINLAYER_API_KEY}
+      RESOURCE_ID: ${RESOURCE_ID}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8000}
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
