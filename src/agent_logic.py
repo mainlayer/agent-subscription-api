@@ -1,9 +1,14 @@
 """Agent capability implementations.
 
 These are the actual agent capabilities exposed through the subscription API.
-In production you would replace the mock implementations below with real calls
-to search engines, LLMs, or other data sources.  The public interface is
-deliberately kept clean so the underlying implementation can be swapped freely.
+In production replace the mock implementations below with real calls to:
+- Search APIs (Bing, Google, Tavily, Perplexity)
+- LLM APIs (Claude, GPT-4, Ollama)
+- Data services (knowledge bases, databases)
+- Custom ML models or microservices
+
+The public interface `execute_agent_task()` is deliberately kept clean so the
+underlying implementation can be swapped freely without changing the API contract.
 """
 
 from __future__ import annotations
@@ -37,8 +42,17 @@ def _deterministic_hash(text: str) -> str:
 async def _web_research(query: str, options: dict[str, Any]) -> str:
     """Simulate async web research.
 
-    In production: call a search API (Bing, Google, Tavily, etc.) and
-    aggregate the top-N results.
+    PRODUCTION INTEGRATION:
+    - Call search APIs: Tavily (recommended for agents), SerpAPI, Bing Search API
+    - Filter results by relevance and recency
+    - Aggregate snippets with proper attribution
+    - Handle rate limits and API errors gracefully
+
+    Example (using Tavily):
+        import tavily
+        client = tavily.AsyncTavilyClient(api_key=...)
+        context = await client.get_search_context(query)
+        return context
     """
     # Simulate network latency
     await asyncio.sleep(0.05)
@@ -77,7 +91,25 @@ async def _web_research(query: str, options: dict[str, Any]) -> str:
 async def _summarize(query: str, options: dict[str, Any]) -> str:
     """Summarize the provided text or topic.
 
-    In production: pass *query* to an LLM with a summarization prompt.
+    PRODUCTION INTEGRATION:
+    - Use Claude API for high-quality summaries
+    - Support configurable options: max_sentences, style, focus area
+    - Cache long-lived summaries for repeated queries
+    - Handle large documents with chunking
+
+    Example (using Claude):
+        from anthropic import AsyncAnthropic
+        client = AsyncAnthropic(api_key=...)
+        max_sentences = int(options.get("max_sentences", 3))
+        message = await client.messages.create(
+            model="claude-opus-4-1",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": f"Summarize in {max_sentences} sentences:\\n{query}"
+            }]
+        )
+        return message.content[0].text
     """
     await asyncio.sleep(0.03)
 
@@ -108,8 +140,17 @@ async def _summarize(query: str, options: dict[str, Any]) -> str:
 async def _fact_check(query: str, options: dict[str, Any]) -> str:
     """Assess the factual accuracy of a claim.
 
-    In production: cross-reference the claim against trusted knowledge bases,
-    search results, and a reasoning LLM.
+    PRODUCTION INTEGRATION:
+    - Use multi-stage fact-checking: web search → LLM reasoning → confidence
+    - Cross-reference against trusted sources (Wikipedia, Snopes, PolitiFact API)
+    - Return structured verdicts: SUPPORTED, PARTIALLY_SUPPORTED, CONTRADICTED
+    - Include source citations and confidence scores
+
+    Example pipeline:
+        1. await search_api.get_fact_sources(query)
+        2. llm_verdict = await claude.assess_claim(query, sources)
+        3. confidence = llm_verdict.confidence_score
+        4. return structured_result(verdict, confidence, sources)
     """
     await asyncio.sleep(0.04)
 

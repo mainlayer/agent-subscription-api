@@ -50,7 +50,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=os.getenv("LOG_LEVEL", "INFO"),
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 logger = logging.getLogger("agent_subscription_api")
@@ -63,12 +63,17 @@ logger = logging.getLogger("agent_subscription_api")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Validate required environment variables on startup."""
+    """Validate required environment variables and initialize on startup."""
     required = ("MAINLAYER_API_KEY", "RESOURCE_ID")
     missing = [k for k in required if not os.environ.get(k)]
     if missing:
+        logger.error(f"Missing required environment variables: {', '.join(missing)}")
         raise RuntimeError(f"Missing required environment variables: {', '.join(missing)}")
-    logger.info("Agent Subscription API starting — resource_id=%s", os.environ["RESOURCE_ID"])
+    logger.info(
+        "Agent Subscription API starting — resource_id=%s",
+        os.environ["RESOURCE_ID"],
+    )
+    logger.info("Endpoints: /health, /agent/capabilities, /subscribe, /agent/run")
     yield
     logger.info("Agent Subscription API shut down.")
 

@@ -50,9 +50,9 @@ class AgentTaskResult(BaseModel):
 class Plan(BaseModel):
     """A subscription plan offered by this agent."""
 
-    name: PlanName
-    calls_per_month: int = Field(..., description="-1 means unlimited.")
-    price_usd: float = Field(..., ge=0)
+    name: PlanName = Field(description="Plan identifier (starter, pro, unlimited)")
+    calls_per_month: int = Field(..., description="Monthly call limit (-1 = unlimited)")
+    price_usd: float = Field(..., ge=0, description="Monthly price in USD")
 
 
 class CapabilitiesResponse(BaseModel):
