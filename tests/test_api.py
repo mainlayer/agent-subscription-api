@@ -194,7 +194,7 @@ class TestSubscribe:
             plan=PlanName.starter,
             status="pending_payment",
             calls_remaining=0,
-            checkout_url="https://pay.mainlayer.xyz/checkout/abc",
+            checkout_url="https://pay.mainlayer.fr/checkout/abc",
         )
         mock_from_env.return_value = mock_client
 

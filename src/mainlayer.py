@@ -3,7 +3,7 @@
 Mainlayer is the monetization layer for AI agents — it handles subscription
 billing, entitlement checks, and usage tracking so your agent doesn't have to.
 
-Base URL: https://api.mainlayer.xyz
+Base URL: https://api.mainlayer.fr
 Auth:     Authorization: Bearer <MAINLAYER_API_KEY>
 """
 
@@ -20,7 +20,7 @@ except ImportError:
     from src.models import EntitlementResponse, PlanName, SubscribeResponse  # type: ignore[no-redef]
 
 
-_BASE_URL = "https://api.mainlayer.xyz"
+_BASE_URL = "https://api.mainlayer.fr"
 _DEFAULT_TIMEOUT = 10.0
 
 

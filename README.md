@@ -1,6 +1,6 @@
 # Agent Subscription API
 
-An AI agent subscription API pattern — AI agents can subscribe to and call other AI agents autonomously, with billing managed by [Mainlayer](https://mainlayer.xyz).
+An AI agent subscription API pattern — AI agents can subscribe to and call other AI agents autonomously, with billing managed by [Mainlayer](https://mainlayer.fr).
 
 ## What This Demonstrates
 
@@ -245,7 +245,7 @@ pytest tests/ -v --cov=src --cov-report=term-missing --asyncio-mode=auto
 
 ## Mainlayer Integration
 
-This template uses [Mainlayer](https://mainlayer.xyz) for:
+This template uses [Mainlayer](https://mainlayer.fr) for:
 
 - **Entitlement checks** — verify a wallet has an active subscription before serving a request.
 - **Subscription creation** — create and manage subscriptions on behalf of subscriber agents.
